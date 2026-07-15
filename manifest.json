@@ -1,0 +1,16 @@
+{
+  "name": "Hearty Coins",
+  "short_name": "Hearty Coins",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#FFC9D1",
+  "theme_color": "##FF69B4",
+  "icons": [
+    {
+      "src": "https://i.postimg.cc/NjXwj5Qk/1784142947151.jpg",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
