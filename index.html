@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hearty Coins</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="manifest" href="manifest.json">
     <style>
         body { margin: 0; font-family: 'Segoe UI', sans-serif; background-color: #fff5f7; color: #d87093; padding-bottom: 80px; }
         
@@ -459,6 +458,46 @@
     45% { transform: scale(1.2); }
     60% { transform: scale(1); }
 }
+    
+    /* Container sản phẩm cần position: relative để badge đè lên đúng chỗ */
+.product-card { 
+    position: relative; 
+    background: white; 
+    padding: 10px; 
+    border-radius: 15px; 
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05); 
+    text-align: center; 
+    overflow: hidden; /* Cắt bỏ phần dư thừa khi làm mờ */
+}
+
+/* Nội dung bên trong bị mờ */
+.product-card.locked .content-wrapper {
+    filter: grayscale(80%) blur(1px);
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+/* Icon khóa nổi bật đè lên trên */
+.lock-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 50px;
+    font-size: 14px;
+    z-index: 20;
+    display: none; /* Mặc định ẩn */
+    pointer-events: none;
+}
+
+.product-card.locked .lock-badge {
+    display: block; /* Hiện khi bị khóa */
+}
+
+
     </style>
 </head>
 <body>
@@ -557,6 +596,23 @@
     </div>
 </div>
 
+<div class="section-title" style="margin-top: 40px; color: #ffd700;">
+    GÓI THÀNH VIÊN VIP ⭐
+</div>
+<div class="deposit-container">
+    <div id="vip-box" class="info-box" style="background: linear-gradient(135deg, #fff9c4, #fff176); border: 2px solid #fbc02d; position: relative; overflow: hidden;">
+    <i class="fas fa-crown" style="font-size: 40px; color: #ffca28; margin-bottom: 10px;"></i>
+    <h3 style="margin: 0; color: #856404;">Trở thành VIP ngay!</h3>
+    <p style="font-size: 13px; color: #856404; margin: 10px 0;">Giảm thêm 5% tất cả vật phẩm + Mở khóa vật phẩm độc quyền.</p>
+    <!-- Dòng thông báo thời hạn -->
+    <p style="font-size: 12px; color: #d87093; font-weight: bold; margin-bottom: 15px;">
+        <i class="fas fa-clock"></i> Thời hạn sử dụng: 6 tháng
+    </p>
+    <button id="vip-btn" class="pay-btn" style="background: #fbc02d; color: #5d4037;" onclick="buyVIP()">Mua VIP (10 Xu)</button>
+</div>
+
+
+</div>
 
     </div>
 </div>
@@ -564,40 +620,83 @@
 
     <div id="shop-section" class="content-section">
     <div class="section-title" style="margin-bottom: 20px;">
-    Cửa Hàng Vật Phẩm
-    <i class="fas fa-history" onclick="showExchangeHistory()" style="margin-left:10px; cursor:pointer; font-size: 18px; color:#ff69b4;"></i>
-</div>
+        Cửa Hàng Vật Phẩm
+        <i class="fas fa-history" onclick="showExchangeHistory()" style="margin-left:10px; cursor:pointer; font-size: 18px; color:#ff69b4;"></i>
+    </div>
 
-    
+
     <div class="shop-category cat-garena hot-category">
         <div class="category-title">Khu Thẻ Garena</div>
         <div class="shop-grid">
             <div class="product-card">
                 <div class="like-badge"><i class="fas fa-thumbs-up"></i></div>
-                <h4>Thẻ 5k</h4><p>5 xu</p><button class="buy-btn" onclick="exchangeItem(5, 'Thẻ Garena 5k')">Đổi</button>
+                <h4>Thẻ 5k</h4>
+                <p>5 xu</p><button class="buy-btn" onclick="exchangeItem(5, 'Thẻ Garena 5k')">Đổi</button>
             </div>
-            <div class="product-card"><h4>Thẻ 10k</h4><p>9.5 xu</p><button class="buy-btn" onclick="exchangeItem(9.5, 'Thẻ Garena 10k')">Đổi</button></div>
-            <div class="product-card"><h4>Thẻ 20k</h4><p>19 xu</p><button class="buy-btn" onclick="exchangeItem(19, 'Thẻ Garena 20k')">Đổi</button></div>
+            <div class="product-card">
+                <h4>Thẻ 10k</h4>
+                <p>9.5 xu</p><button class="buy-btn" onclick="exchangeItem(9.5, 'Thẻ Garena 10k')">Đổi</button>
+            </div>
+            <div class="product-card">
+                <h4>Thẻ 20k</h4>
+                <p>19 xu</p><button class="buy-btn" onclick="exchangeItem(19, 'Thẻ Garena 20k')">Đổi</button>
+            </div>
             <div class="product-card">
                 <div class="like-badge"><i class="fas fa-thumbs-up"></i></div>
-                <h4>Thẻ 50k</h4><p>48.5 xu</p><button class="buy-btn" onclick="exchangeItem(48.5, 'Thẻ Garena 50k')">Đổi</button>
+                <h4>Thẻ 50k</h4>
+                <p>48.5 xu</p><button class="buy-btn" onclick="exchangeItem(48.5, 'Thẻ Garena 50k')">Đổi</button>
             </div>
-            <div class="product-card"><h4>Thẻ 100k</h4><p>98 xu</p><button class="buy-btn" onclick="exchangeItem(98, 'Thẻ Garena 100k')">Đổi</button></div>
-            <div class="product-card"><h4>Thẻ 200k</h4><p>197 xu</p><button class="buy-btn" onclick="exchangeItem(197, 'Thẻ Garena 200k')">Đổi</button></div>
+            <div class="product-card locked" id="card-garena-100k">
+    <div class="lock-badge"><i class="fas fa-lock"></i> VIP ONLY</div>
+    <div class="content-wrapper">
+        <h4>Thẻ 100k <i class="fas fa-crown" style="color:#fbc02d; font-size:12px;"></i></h4>
+        <p>98 xu</p><button class="buy-btn" onclick="exchangeItem(98, 'Thẻ Garena 100k')">Đổi</button>
+    </div>
+</div>
+
+            <!-- ITEM VIP: Đã thêm ID và Lock Badge -->
+            <div class="product-card locked" id="card-garena-200k">
+                <div class="lock-badge"><i class="fas fa-lock"></i> VIP ONLY</div>
+                <div class="content-wrapper">
+                    <h4>Thẻ 200k <i class="fas fa-crown" style="color:#fbc02d; font-size:12px;"></i></h4>
+                    <p>197 xu</p><button class="buy-btn" onclick="exchangeItem(197, 'Thẻ Garena 200k')">Đổi</button>
+                </div>
+            </div>
         </div>
     </div>
 
     <div class="shop-category cat-zing hot-category">
         <div class="category-title">Khu Thẻ Zing</div>
         <div class="shop-grid">
-            <div class="product-card"><h4>Thẻ 10k</h4><p>10 xu</p><button class="buy-btn" onclick="exchangeItem(10, 'Thẻ Zing 10k')">Đổi</button></div>
+            <div class="product-card">
+                <h4>Thẻ 10k</h4>
+                <p>10 xu</p><button class="buy-btn" onclick="exchangeItem(10, 'Thẻ Zing 10k')">Đổi</button>
+            </div>
             <div class="product-card">
                 <div class="like-badge"><i class="fas fa-thumbs-up"></i></div>
-                <h4>Thẻ 20k</h4><p>19 xu</p><button class="buy-btn" onclick="exchangeItem(19, 'Thẻ Zing 20k')">Đổi</button>
+                <h4>Thẻ 20k</h4>
+                <p>19 xu</p><button class="buy-btn" onclick="exchangeItem(19, 'Thẻ Zing 20k')">Đổi</button>
             </div>
-            <div class="product-card"><h4>Thẻ 50k</h4><p>49 xu</p><button class="buy-btn" onclick="exchangeItem(49, 'Thẻ Zing 50k')">Đổi</button></div>
-            <div class="product-card"><h4>Thẻ 100k</h4><p>98 xu</p><button class="buy-btn" onclick="exchangeItem(98, 'Thẻ Zing 100k')">Đổi</button></div>
-            <div class="product-card"><h4>Thẻ 200k</h4><p>197 xu</p><button class="buy-btn" onclick="exchangeItem(197, 'Thẻ Zing 200k')">Đổi</button></div>
+            <div class="product-card">
+                <h4>Thẻ 50k</h4>
+                <p>49 xu</p><button class="buy-btn" onclick="exchangeItem(49, 'Thẻ Zing 50k')">Đổi</button>
+            </div>
+            <div class="product-card locked" id="card-zing-100k">
+    <div class="lock-badge"><i class="fas fa-lock"></i> VIP ONLY</div>
+    <div class="content-wrapper">
+        <h4>Thẻ 100k <i class="fas fa-crown" style="color:#fbc02d; font-size:12px;"></i></h4>
+        <p>98 xu</p><button class="buy-btn" onclick="exchangeItem(98, 'Thẻ Zing 100k')">Đổi</button>
+    </div>
+</div>
+
+            <!-- ITEM VIP: Đã thêm ID và Lock Badge -->
+            <div class="product-card locked" id="card-zing-200k">
+                <div class="lock-badge"><i class="fas fa-lock"></i> VIP ONLY</div>
+                <div class="content-wrapper">
+                    <h4>Thẻ 200k <i class="fas fa-crown" style="color:#fbc02d; font-size:12px;"></i></h4>
+                    <p>197 xu</p><button class="buy-btn" onclick="exchangeItem(197, 'Thẻ Zing 200k')">Đổi</button>
+                </div>            
+            </div>
         </div>
     </div>
 
@@ -606,24 +705,55 @@
         <div class="shop-grid">
             <div class="product-card">
                 <div class="like-badge"><i class="fas fa-thumbs-up"></i></div>
-                <h4>Gói Plus 7 ngày</h4><p>19 xu</p><button class="buy-btn" onclick="exchangeItem(19, 'Plus 7 ngày')">Đổi</button>
+                <h4>Gói Plus 7 ngày</h4>
+                <p>19 xu</p><button class="buy-btn" onclick="exchangeItem(19, 'Plus 7 ngày')">Đổi</button>
             </div>
-            <div class="product-card"><h4>Gói Plus 30 ngày</h4><p>98 xu</p><button class="buy-btn" onclick="exchangeItem(98, 'Plus 30 ngày')">Đổi</button></div>
-            <div class="product-card"><h4>Gói Xu Nông Trại 1</h4><p>19 xu</p><button class="buy-btn" onclick="exchangeItem(19, 'Xu Nông Trại 1')">Đổi</button></div>
-            <div class="product-card"><h4>Gói Xu Nông Trại 2</h4><p>58 xu</p><button class="buy-btn" onclick="exchangeItem(58, 'Xu Nông Trại 2')">Đổi</button></div>
-            <div class="product-card"><h4>Gói thành viên bán tức thì</h4><p>19 xu</p><button class="buy-btn" onclick="exchangeItem(19, 'Gói bán tức thì')">Đổi</button></div>
-            <div class="product-card"><h4>Gói bốc thăm theo chủ đề</h4><p>58 xu</p><button class="buy-btn" onclick="exchangeItem(58, 'Gói bốc thăm')">Đổi</button></div>
+            <!-- ITEM VIP: Đã thêm ID và Lock Badge -->
+              <div class="product-card locked" id="card-plus-30">
+                <div class="lock-badge"><i class="fas fa-lock"></i> VIP ONLY</div>
+                <div class="content-wrapper">
+                    <h4>Gói Plus 30 ngày <i class="fas fa-crown" style="color:#fbc02d; font-size:12px;"></i></h4>
+                    <p>98 xu</p><button class="buy-btn" onclick="exchangeItem(98, 'Plus 30 ngày')">Đổi</button>
+                </div>
+            </div>
+            <div class="product-card">
+                <h4>Gói Xu Nông Trại 1</h4>
+                <p>19 xu</p><button class="buy-btn" onclick="exchangeItem(19, 'Xu Nông Trại 1')">Đổi</button>
+            </div>
+            <div class="product-card">
+                <h4>Gói Xu Nông Trại 2</h4>
+                <p>58 xu</p><button class="buy-btn" onclick="exchangeItem(58, 'Xu Nông Trại 2')">Đổi</button>
+            </div>
+            <div class="product-card">
+                <h4>Gói thành viên bán tức thì</h4>
+                <p>19 xu</p><button class="buy-btn" onclick="exchangeItem(19, 'Gói bán tức thì')">Đổi</button>
+            </div>
+            <div class="product-card">
+                <h4>Gói bốc thăm theo chủ đề</h4>
+                <p>58 xu</p><button class="buy-btn" onclick="exchangeItem(58, 'Gói bốc thăm')">Đổi</button>
+            </div>
         </div>
     </div>
 
     <div class="shop-category cat-lienquan">
         <div class="category-title">Khu Vật Phẩm Liên Quân</div>
         <div class="shop-grid">
-            <div class="product-card"><h4>SSM Thường</h4><p>98 xu</p><button class="buy-btn" onclick="exchangeItem(98, 'SSM Thường')">Đổi</button></div>
-            <div class="product-card"><h4>SSM Vượt cấp</h4><p>196 xu</p><button class="buy-btn" onclick="exchangeItem(196, 'SSM Vượt cấp')">Đổi</button></div>
+            <div class="product-card">
+                <h4>SSM Thường</h4>
+                <p>98 xu</p><button class="buy-btn" onclick="exchangeItem(98, 'SSM Thường')">Đổi</button>
+            </div>
+            <!-- ITEM VIP: Đã thêm ID và Lock Badge -->
+             <div class="product-card locked" id="card-ssm-vuot-cap">
+                <div class="lock-badge"><i class="fas fa-lock"></i> VIP ONLY</div>
+                <div class="content-wrapper">
+                    <h4>SSM Vượt cấp <i class="fas fa-crown" style="color:#fbc02d; font-size:12px;"></i></h4>
+                    <p>196 xu</p><button class="buy-btn" onclick="exchangeItem(196, 'SSM Vượt cấp')">Đổi</button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
 
 <div id="user-section" class="content-section">
     <div id="profile-area" style="display: none;">
@@ -836,18 +966,26 @@ function loadUserData() {
         document.getElementById('login-overlay').style.display = 'none';
         const user = JSON.parse(localStorage.getItem(currentName));
         
-        // CẬP NHẬT BIẾN TOÀN CỤC NÀY
         currentBalance = user.balance; 
         
-        // Load data vào giao diện
+        // Cập nhật tên kèm huy hiệu VIP nếu có
+        let displayName = user.name;
+        if (user.isVIP) {
+            displayName += ' <span style="color:#fbc02d; font-size:16px;">👑 VIP</span>';
+        }
+        document.getElementById('display-name').innerHTML = displayName;
+        
+        // ... (phần còn lại của hàm giữ nguyên)
         document.getElementById('user-balance').innerText = currentBalance;
-        document.getElementById('display-name').innerText = user.name;
         document.getElementById('display-gender').innerText = user.gender;
         document.getElementById('join-date').innerText = user.joinDate;
         document.getElementById('user-avatar').innerText = user.avatar || (user.gender === 'Nam' ? '🧑' : '👩');
         document.getElementById('spent-xu').innerText = user.spentBalance || 0;
+        
+        checkVIPStatus(); // Gọi kiểm tra trạng thái VIP
     }
 }
+
 
 
 
@@ -861,7 +999,13 @@ function syncUser() {
 
 // Gọi loadUserData khi vừa load trang
 window.onload = function() {
-    loadUserData();
+    // 1. Load user để lấy thông tin
+    loadUserData(); 
+    // 2. Kiểm tra hạn VIP (nếu hết hạn, hàm này sẽ tự cập nhật user.isVIP = false)
+    checkVIPStatus(); 
+    // 3. Cập nhật lại giao diện shop dựa trên trạng thái VIP mới nhất
+    updateShopLocks();
+    updateShopDisplay();
     
     const progressBar = document.getElementById('progress-bar');
     const progressText = document.getElementById('progress-text');
@@ -987,30 +1131,39 @@ function confirmDeposit() {
 // Cập nhật lại exchangeItem
 function exchangeItem(price, itemName) {
     const name = localStorage.getItem('currentSession');
-    if (!name) return alert("Vui lòng đăng nhập!");
     let user = JSON.parse(localStorage.getItem(name));
     
-    if (user.balance < price) return alert("Không đủ xu!");
+    // 1. Kiểm tra vật phẩm VIP độc quyền
+    const vipItems = ['Thẻ Garena 200k', 'Thẻ Zing 200k', 'Plus 30 ngày', 'SSM Vượt cấp', 'Thẻ Garena 100k', 'Thẻ Zing 100k'];
+    if (vipItems.includes(itemName) && !user.isVIP) {
+        return alert("Vật phẩm này chỉ dành cho thành viên VIP!");
+    }
 
-    showConfirm("Đổi vật phẩm", "Bạn muốn đổi " + itemName + " với giá " + price + " Xu?", () => {
-        user.balance -= price;
-        user.spentBalance = (user.spentBalance || 0) + price;
+    // 2. Tính giá sau giảm 5% nếu là VIP (áp dụng cho TOÀN BỘ vật phẩm)
+    let finalPrice = user.isVIP ? price * 0.95 : price;
+    finalPrice = Math.round(finalPrice * 100) / 100; // Làm tròn 2 chữ số thập phân
+
+    if (user.balance < finalPrice) return alert("Không đủ xu!");
+
+    // Hiển thị giá đã giảm trong thông báo xác nhận
+    let msg = "Đổi " + itemName + " với giá " + finalPrice + " Xu?";
+    if (user.isVIP) msg += " (Đã giảm 5% cho VIP)";
+
+    showConfirm("Đổi vật phẩm", msg, () => {
+        user.balance -= finalPrice;
+        user.spentBalance = (user.spentBalance || 0) + finalPrice;
         
-        // Khởi tạo mảng nếu chưa có và thêm vào lịch sử đổi
         if (!user.exchangeHistory) user.exchangeHistory = [];
-        user.exchangeHistory.push({
-            date: new Date().toLocaleString(),
-            item: itemName,
-            price: price
-        });
+        user.exchangeHistory.push({ date: new Date().toLocaleString(), item: itemName, price: finalPrice });
         
         localStorage.setItem(name, JSON.stringify(user));
-        
         currentBalance = user.balance;
         document.getElementById('user-balance').innerText = currentBalance;
         if (document.getElementById('spent-xu')) document.getElementById('spent-xu').innerText = user.spentBalance;
     });
 }
+
+
 
 const icons = ['🐱', '🐶', '🐰', '🦊', '🐻', '🐼', '🐨', '🦁', '🧑', '👩‍🦰'];
 
@@ -1155,6 +1308,127 @@ function calculateResult() {
         alert("Phép tính lỗi!");
         clearCalc();
     }
+}
+
+function buyVIP() {
+    const name = localStorage.getItem('currentSession');
+    let user = JSON.parse(localStorage.getItem(name));
+    
+    if (user.isVIP) return alert("Bạn đã là VIP rồi!");
+    if (user.balance < 10) return alert("Không đủ 10 Xu để mua VIP!");
+
+    showConfirm("Mua gói VIP", "Bạn có chắc muốn mua VIP 6 tháng với giá 10 Xu?", () => {
+        user.balance -= 10;
+        user.isVIP = true;
+        
+        // Tính ngày hết hạn (6 tháng = 180 ngày)
+        let expiryDate = new Date();
+        expiryDate.setMonth(expiryDate.getMonth() + 6);
+        user.vipExpiry = expiryDate.toISOString(); // Lưu dưới dạng chuỗi ISO để dễ so sánh
+        
+        localStorage.setItem(name, JSON.stringify(user));
+        
+        currentBalance = user.balance;
+        document.getElementById('user-balance').innerText = currentBalance;
+        
+        checkVIPStatus();
+        updateShopLocks();
+        updateShopDisplay();
+        
+        showSuccess("Chúc mừng! Bạn đã là VIP đến ngày: " + expiryDate.toLocaleDateString());
+    });
+}
+
+function checkVIPStatus() {
+    const name = localStorage.getItem('currentSession');
+    if (!name) return;
+    let user = JSON.parse(localStorage.getItem(name));
+    const vipBox = document.getElementById('vip-box');
+
+    // 1. Kiểm tra hết hạn trước
+    if (user.isVIP && user.vipExpiry) {
+        let now = new Date().getTime();
+        let expiry = new Date(user.vipExpiry).getTime();
+
+        if (now > expiry) {
+            user.isVIP = false;
+            user.vipExpiry = null;
+            localStorage.setItem(name, JSON.stringify(user));
+            location.reload(); // Tải lại để xóa quyền VIP
+            return;
+        }
+
+        // 2. Nếu còn hạn, hiển thị đồng hồ
+        const timer = setInterval(() => {
+            let now = new Date().getTime();
+            let distance = expiry - now;
+
+            if (distance < 0) {
+                clearInterval(timer);
+                location.reload();
+                return;
+            }
+
+            let months = Math.floor(distance / (1000 * 60 * 60 * 24 * 30));
+            let days = Math.floor((distance % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
+            let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            vipBox.innerHTML = `
+                <i class="fas fa-crown" style="font-size:30px; color:#fbc02d;"></i>
+                <h3 style="color:#856404; margin:5px 0;">Bạn đang là VIP! ⭐</h3>
+                <div style="font-size:14px; color:#856404; font-weight:bold;">
+                    Còn: ${months}th ${days}d ${hours}h ${minutes}m ${seconds}s
+                </div>
+            `;
+        }, 1000);
+    } 
+    // 3. Nếu chưa là VIP, giữ nguyên giao diện nút mua
+    else if (!user.isVIP) {
+        vipBox.innerHTML = `
+            <i class="fas fa-crown" style="font-size: 40px; color: #ffca28; margin-bottom: 10px;"></i>
+            <h3 style="margin: 0; color: #856404;">Trở thành VIP ngay!</h3>
+            <p style="font-size: 13px; color: #856404; margin: 10px 0;">Giảm thêm 5% tất cả vật phẩm + Mở khóa vật phẩm độc quyền.</p>
+            <button id="vip-btn" class="pay-btn" style="background: #fbc02d; color: #5d4037;" onclick="buyVIP()">Mua VIP (10 Xu)</button>
+        `;
+    }
+}
+
+function updateShopLocks() {
+    const user = JSON.parse(localStorage.getItem(localStorage.getItem('currentSession')));
+    const vipItems = ['card-garena-200k', 'card-zing-200k', 'card-plus-30', 'card-ssm-vuot-cap', 'card-garena-100k', 'card-zing-100k'];
+    
+    vipItems.forEach(id => {
+        const card = document.getElementById(id);
+        if (card) {
+            if (user && user.isVIP) {
+                card.classList.remove('locked');
+            } else {
+                card.classList.add('locked');
+            }
+        }
+    });
+}
+
+
+function updateShopDisplay() {
+    const user = JSON.parse(localStorage.getItem(localStorage.getItem('currentSession')));
+    if (!user) return;
+
+    // Lấy tất cả các thẻ sản phẩm
+    const cards = document.querySelectorAll('.product-card');
+    cards.forEach(card => {
+        // Chỉ cập nhật nếu card có chứa giá (thường nằm trong thẻ <p>)
+        let pTag = card.querySelector('p');
+        if (pTag && !pTag.innerText.includes("đã giảm")) {
+            let originalPrice = parseFloat(pTag.innerText);
+            if (user.isVIP) {
+                let discountedPrice = (originalPrice * 0.95).toFixed(1);
+                pTag.innerHTML = `<s>${originalPrice}</s> <span style="color:#ff69b4; font-weight:bold;">${discountedPrice}</span> <small>xu</small>`;
+            }
+        }
+    });
 }
 
     </script>
