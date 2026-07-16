@@ -1345,7 +1345,7 @@ function checkVIPStatus() {
     let user = JSON.parse(localStorage.getItem(name));
     const vipBox = document.getElementById('vip-box');
 
-    // 1. Kiểm tra hết hạn trước
+    // 1. Kiểm tra hết hạn
     if (user.isVIP && user.vipExpiry) {
         let now = new Date().getTime();
         let expiry = new Date(user.vipExpiry).getTime();
@@ -1354,11 +1354,11 @@ function checkVIPStatus() {
             user.isVIP = false;
             user.vipExpiry = null;
             localStorage.setItem(name, JSON.stringify(user));
-            location.reload(); // Tải lại để xóa quyền VIP
+            location.reload(); 
             return;
         }
 
-        // 2. Nếu còn hạn, hiển thị đồng hồ
+        // 2. Nếu đang là VIP, hiện đồng hồ đếm ngược
         const timer = setInterval(() => {
             let now = new Date().getTime();
             let distance = expiry - now;
@@ -1384,16 +1384,20 @@ function checkVIPStatus() {
             `;
         }, 1000);
     } 
-    // 3. Nếu chưa là VIP, giữ nguyên giao diện nút mua
-    else if (!user.isVIP) {
+    // 3. Nếu chưa là VIP, hiển thị giao diện mua VIP đầy đủ (ĐÃ THÊM DÒNG 6 THÁNG)
+    else {
         vipBox.innerHTML = `
             <i class="fas fa-crown" style="font-size: 40px; color: #ffca28; margin-bottom: 10px;"></i>
             <h3 style="margin: 0; color: #856404;">Trở thành VIP ngay!</h3>
             <p style="font-size: 13px; color: #856404; margin: 10px 0;">Giảm thêm 5% tất cả vật phẩm + Mở khóa vật phẩm độc quyền.</p>
+            <p style="font-size: 12px; color: #d87093; font-weight: bold; margin-bottom: 15px;">
+                <i class="fas fa-clock"></i> Thời hạn sử dụng: 6 tháng
+            </p>
             <button id="vip-btn" class="pay-btn" style="background: #fbc02d; color: #5d4037;" onclick="buyVIP()">Mua VIP (10 Xu)</button>
         `;
     }
 }
+
 
 function updateShopLocks() {
     const user = JSON.parse(localStorage.getItem(localStorage.getItem('currentSession')));
