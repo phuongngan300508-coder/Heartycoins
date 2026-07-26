@@ -919,6 +919,21 @@
             </div>
         </div>
     </div>
+    
+    <!-- KHU VỰC NHẬP GIFTCODE -->
+<div class="section-title" style="margin-top: 40px; color: #ff69b4;">NHẬP GIFTCODE NHẬN XU</div>
+<div style="padding: 0 20px 20px 20px;">
+    <div class="profile-card" style="text-align: center;">
+        <h4 style="margin: 0 0 10px 0; color: #d87093;">Đổi Mã Quà Tặng</h4>
+        <p style="font-size: 12px; color: #888; margin-bottom: 15px;">Nhập mã giftcode của bạn vào ô bên dưới để nhận phần thưởng xu.</p>
+        
+        <div style="display: flex; gap: 10px; justify-content: center;">
+            <input type="text" id="giftcode-input" placeholder="Nhập mã code..." style="flex: 1; padding: 12px; border: 2px solid #ffc0cb; border-radius: 15px; outline: none; font-size: 14px; text-transform: uppercase;">
+            <button onclick="redeemGiftcode()" style="background: #ff69b4; color: white; border: none; padding: 0 20px; border-radius: 15px; font-weight: bold; cursor: pointer;">Đổi</button>
+        </div>
+    </div>
+</div>
+
         
         <!-- Phần quét mã QR Chủ Web trong Cài Đặt -->
     <div class="section-title" style="margin-top: 40px; color: #ff69b4;">QUÉT MÃ QR THANH TOÁN</div>
@@ -948,6 +963,19 @@
     <a href="https://www.instagram.com/sozlia?igsh=M25tMm50amxnZGU3" class="contact-card"><i class="fab fa-instagram"></i> Instagram</a>
     <a href="https://zalo.me/0983709292" class="contact-card"><i class="fab fa-whatsapp"></i> Zalo</a>
 </div>
+    
+    <!-- KHU VỰC TẠO CODE (ẨN / BÍ MẬT TRONG SHOP) -->
+<div class="shop-category" style="border-color: #a18cd1; background: #f9f6ff; border-radius: 20px; padding: 15px; margin-top: 30px; border: 2px dashed #b19cd9;">
+    <div class="category-title" style="color: #7b1fa2; cursor: pointer;" onclick="toggleSecretCreator()">🔑 Trạm Tạo Giftcode (Admin)</div>
+    <p style="font-size: 12px; color: #666; margin-top: 0;">Nhấn vào tiêu đề để mở khóa trạm tạo mã code mới.</p>
+    
+    <div id="admin-creator-box" style="display: none; flex-direction: column; gap: 10px; margin-top: 10px;">
+        <input type="text" id="admin-code-input" placeholder="Nhập tên mã (Ví dụ: HEARTY2026)" style="padding: 10px; border: 1px solid #a18cd1; border-radius: 12px; outline: none; text-transform: uppercase;">
+        <input type="number" id="admin-reward-input" placeholder="Nhập số xu thưởng (Ví dụ: 10)" style="padding: 10px; border: 1px solid #a18cd1; border-radius: 12px; outline: none;">
+        <button onclick="adminCreateCode()" style="background: linear-gradient(135deg, #a18cd1, #7b1fa2); color: white; border: none; padding: 10px; border-radius: 12px; font-weight: bold; cursor: pointer;">Tạo Code Ngay</button>
+    </div>
+</div>
+
 </div>
 
 
@@ -1212,6 +1240,28 @@
         </button>
     </div>
 </div>
+
+<!-- Popup Nhập Mật Khẩu Admin (Thiết kế đồng bộ) -->
+<div id="admin-password-popup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); z-index: 5000; align-items:center; justify-content:center;">
+    <div style="background:white; padding:30px; border-radius:30px; width:85%; max-width:320px; text-align:center; box-shadow: 0 20px 40px rgba(0,0,0,0.3); animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative;">
+        
+        <span onclick="closeAdminPasswordPopup()" 
+              style="position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 22px; color: #aaa; font-weight: bold; transition: 0.2s;"
+              onmouseover="this.style.color='#ff69b4'" onmouseout="this.style.color='#aaa'">&times;</span>
+
+        <div style="font-size: 50px; color: #7b1fa2; margin-bottom: 10px;">🔐</div>
+        <h3 style="color: #7b1fa2; margin: 0 0 5px 0; font-size: 18px;">Xác Thực Quản Trị</h3>
+        <p style="font-size: 12px; color: #666; margin-bottom: 20px;">Vui lòng nhập mật khẩu để mở khóa trạm tạo giftcode.</p>
+        
+        <input type="password" id="admin-password-input" placeholder="Nhập mật khẩu..." style="width: 100%; padding: 12px; border: 2px solid #a18cd1; border-radius: 15px; outline: none; font-size: 14px; text-align: center; box-sizing: border-box; margin-bottom: 15px;" onkeypress="if(event.key === 'Enter') submitAdminPassword()">
+        
+        <div style="display: flex; gap: 10px;">
+            <button onclick="closeAdminPasswordPopup()" style="flex: 1; background: #eee; color: #666; border: none; padding: 12px 0; border-radius: 15px; font-weight: bold; cursor: pointer;">Hủy</button>
+            <button onclick="submitAdminPassword()" style="flex: 1; background: linear-gradient(135deg, #a18cd1, #7b1fa2); color: white; border: none; padding: 12px 0; border-radius: 15px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(161,140,209,0.4);">Xác nhận</button>
+        </div>
+    </div>
+</div>
+
 
     <script>
 // Hàm đăng nhập
@@ -2327,6 +2377,136 @@ function claimCollectionReward(tier, rewardXu) {
         Nhận ngay <b style="color:#ff69b4;">+${rewardXu} Xu</b> vào ví.</p>
     `, true);
 }
+
+// --- HỆ THỐNG GIFTCODE ---
+
+// 1. Kho lưu trữ danh sách mã code toàn cục (Lưu trên localStorage chung)
+function getGlobalCodes() {
+    let codes = localStorage.getItem('hearty_global_codes');
+    if (!codes) {
+        // Mặc định tạo sẵn một vài mã mẫu
+        const defaultCodes = {
+            "HEARTY2026": 10,
+            "WELCOME": 5,
+            "VIPDAO": 20
+        };
+        localStorage.setItem('hearty_global_codes', JSON.stringify(defaultCodes));
+        return defaultCodes;
+    }
+    return JSON.parse(codes);
+}
+
+// 2. Admin tạo mã code mới
+function adminCreateCode() {
+    const codeInput = document.getElementById('admin-code-input').value.trim().toUpperCase();
+    const rewardInput = parseInt(document.getElementById('admin-reward-input').value);
+
+    if (!codeInput) return alert("Vui lòng nhập tên mã code!");
+    if (isNaN(rewardInput) || rewardInput <= 0) return alert("Vui lòng nhập số xu thưởng hợp lệ!");
+
+    let globalCodes = getGlobalCodes();
+    
+    if (globalCodes[codeInput]) {
+        return alert(`Mã "${codeInput}" đã tồn tại với phần thưởng ${globalCodes[codeInput]} Xu!`);
+    }
+
+    globalCodes[codeInput] = rewardInput;
+    localStorage.setItem('hearty_global_codes', JSON.stringify(globalCodes));
+
+    document.getElementById('admin-code-input').value = '';
+    document.getElementById('admin-reward-input').value = '';
+
+    showSuccess(`
+        <i class="fas fa-key" style="font-size:40px; color:#7b1fa2;"></i>
+        <h3 style="margin:10px 0;">Tạo Code Thành Công!</h3>
+        <p>Mã: <b style="color:#7b1fa2;">${codeInput}</b><br>
+        Thưởng: <b style="color:#ff69b4;">+${rewardInput} Xu</b></p>
+    `, true);
+}
+
+// 3. Người dùng nhập và đổi code
+function redeemGiftcode() {
+    const codeInput = document.getElementById('giftcode-input');
+    const code = codeInput.value.trim().toUpperCase();
+    
+    if (!code) return alert("Vui lòng nhập mã giftcode!");
+
+    const currentName = localStorage.getItem('currentSession');
+    if (!currentName) return alert("Vui lòng đăng nhập!");
+
+    let globalCodes = getGlobalCodes();
+    if (!globalCodes[code]) {
+        return alert("Mã giftcode không tồn tại hoặc đã hết hạn!");
+    }
+
+    let user = JSON.parse(localStorage.getItem(currentName));
+    
+    // Khởi tạo danh sách code đã dùng của tài khoản nếu chưa có
+    if (!user.redeemedCodes) {
+        user.redeemedCodes = [];
+    }
+
+    // Kiểm tra xem tài khoản này đã nhập mã này chưa
+    if (user.redeemedCodes.includes(code)) {
+        return alert("Bạn đã sử dụng mã giftcode này rồi, mỗi tài khoản chỉ được nhập 1 lần!");
+    }
+
+    const rewardXu = globalCodes[code];
+
+    // Tiến hành cộng xu và ghi nhận mã đã dùng
+    user.balance += rewardXu;
+    user.redeemedCodes.push(code);
+
+    // Ghi vào lịch sử nạp/nhận xu
+    if (!user.history) user.history = [];
+    user.history.push({
+        date: new Date().toLocaleString(),
+        money: 0,
+        xu: rewardXu,
+        note: `Nhập Giftcode: ${code}`
+    });
+
+    localStorage.setItem(currentName, JSON.stringify(user));
+    currentBalance = user.balance;
+    document.getElementById('user-balance').innerText = currentBalance;
+    codeInput.value = '';
+
+    showSuccess(`
+        <i class="fas fa-ticket-alt" style="font-size:40px; color:#ff69b4;"></i>
+        <h3 style="margin:10px 0;">Đổi Code Thành Công!</h3>
+        <p>Bạn đã nhập mã <b style="color:#7b1fa2;">${code}</b><br>
+        Nhận được: <b style="color:#ff69b4;">+${rewardXu} Xu</b> vào ví!</p>
+    `, true);
+}
+
+function toggleSecretCreator() {
+    const box = document.getElementById('admin-creator-box');
+    if (box.style.display === 'flex') {
+        box.style.display = 'none';
+    } else {
+        // Hiển thị popup nhập mật khẩu đẹp thay vì dùng prompt mặc định
+        document.getElementById('admin-password-input').value = '';
+        document.getElementById('admin-password-popup').style.display = 'flex';
+        setTimeout(() => document.getElementById('admin-password-input').focus(), 100);
+    }
+}
+
+function closeAdminPasswordPopup() {
+    document.getElementById('admin-password-popup').style.display = 'none';
+}
+
+function submitAdminPassword() {
+    const password = document.getElementById('admin-password-input').value;
+    if (password === "230282@") {
+        closeAdminPasswordPopup();
+        document.getElementById('admin-creator-box').style.display = 'flex';
+    } else {
+        alert("Mật khẩu không chính xác!");
+        document.getElementById('admin-password-input').value = '';
+        document.getElementById('admin-password-input').focus();
+    }
+}
+
 
     </script>
 </body>
