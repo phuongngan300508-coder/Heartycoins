@@ -571,6 +571,32 @@
     background: linear-gradient(135deg, #ff1493, #ff69b4) !important;
     color: white !important;
 }
+    
+    /* Style cho bảng thông báo Giftcode theo tháng */
+.monthly-gift-card {
+    background: linear-gradient(135deg, #fff0f3, #ffe4ea);
+    border: 2px dashed #ff69b4;
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(255,105,180,0.1);
+    margin: 0 5%;
+}
+
+.gift-code-badge {
+    background: white;
+    color: #ff1493;
+    padding: 8px 16px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 16px;
+    letter-spacing: 1px;
+    border: 1px solid #ffc0cb;
+    display: inline-block;
+    margin: 10px 0;
+    box-shadow: 0 2px 8px rgba(255,105,180,0.2);
+}
+
     </style>
 </head>
 <body>
@@ -626,6 +652,41 @@
             <div class="slide" style="background: linear-gradient(45deg, #ffecd2, #fcb69f);"><i class="fas fa-gamepad"></i> Gói Playtogether</div>
         </div>
     </div>
+
+            <!-- Bảng Thông Báo Giftcode Theo Tháng -->
+<div class="section-title" style="margin-top: 40px; color: #ff1493;">
+    GIFTCODE THÁNG NÀY 🎁
+</div>
+<div class="deposit-container">
+    <div class="monthly-gift-card">
+        <i class="fas fa-calendar-alt" style="font-size: 30px; color: #ff69b4; margin-bottom: 8px;"></i>
+        <h3 id="current-month-title" style="margin: 0; color: #d87093; font-size: 18px;">Giftcode Tháng Hiện Tại</h3>
+        <p style="font-size: 12px; color: #666; margin: 8px 0;">Mã độc quyền dành riêng cho tháng này, nhanh tay đổi thưởng nhé!</p>
+        
+        <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin: 10px 0; flex-wrap: wrap;">
+            <div class="gift-code-badge" id="monthly-code-display" style="margin: 0;">---</div>
+            <button onclick="copyMonthlyCode()" style="background: #ff69b4; color: white; border: none; padding: 8px 14px; border-radius: 12px; font-weight: bold; cursor: pointer; font-size: 13px; box-shadow: 0 2px 8px rgba(255,105,180,0.3); transition: 0.2s;" onmouseover="this.style.background='#ff1493'" onmouseout="this.style.background='#ff69b4'">
+                <i class="fas fa-copy"></i> Sao chép
+            </button>
+        </div>
+        
+        <p style="font-size: 11px; color: #888; margin: 0; font-style: italic;" id="monthly-code-desc">
+            Phần thưởng: +2 Xu • Lặp lại định kỳ hàng năm!
+        </p>
+    </div>
+</div>
+
+<!-- Bảng Thông Báo Giftcode Sự Kiện (Hỗ trợ hiển thị nhiều mã) -->
+<div class="section-title" style="margin-top: 30px; color: #ff4757;">
+    GIFTCODE SỰ KIỆN 🎉
+</div>
+<div class="deposit-container">
+    <div class="monthly-gift-card" style="border: 2px dashed #ff4757; background: linear-gradient(135deg, #fff5f5, #ffe3e3);">
+        <!-- Nội dung này sẽ được hàm loadAllGiftcodes tự động render linh hoạt khi có từ 2 mã trở lên -->
+    </div>
+</div>
+
+
 
             <div class="section-title" style="margin-top: 40px; color: #ffd700;">
     GÓI THÀNH VIÊN VIP ⭐
@@ -1363,6 +1424,7 @@ window.onload = function() {
     // 3. Cập nhật lại giao diện shop dựa trên trạng thái VIP mới nhất
     updateShopLocks();
     updateShopDisplay();
+    loadAllGiftcodes();
     
     const progressBar = document.getElementById('progress-bar');
     const progressText = document.getElementById('progress-text');
@@ -2380,29 +2442,33 @@ function claimCollectionReward(tier, rewardXu) {
 
 // --- HỆ THỐNG GIFTCODE ---
 
-// 1. Kho lưu trữ danh sách mã code toàn cục (Lưu trên localStorage chung)
+// 1. Kho lưu trữ danh sách mã code toàn cục
 function getGlobalCodes() {
-    // 1. Danh sách giftcode cố định được viết trực tiếp trong script (Mọi thiết bị đều nhận được)
-    const masterCodes = {
-        "HEARTYCOINSTHANG7": 2,
-        "HEARTYCOINSTHANG8": 2,
-        "HEARTYCOINSTHANG9": 2,
-        "HEARTYCOINSTHANG10": 2,
-        "HEARTYCOINSTHANG11": 2,
-        "HEARTYCOINSTHANG12": 2
-            };
+    // 1a. Mã tháng tiêu chuẩn (Thưởng 2 xu)
+    let masterCodes = {
+        "HEARTYCOINSTHANG12026": 2,
+        "HEARTYCOINSTHANG22026": 2,
+        "HEARTYCOINSTHANG32026": 2,
+        "HEARTYCOINSTHANG42026": 2,
+        "HEARTYCOINSTHANG52026": 2,
+        "HEARTYCOINSTHANG62026": 2,
+        "HEARTYCOINSTHANG72026": 2,
+        "HEARTYCOINSTHANG82026": 2,
+        "HEARTYCOINSTHANG92026": 2,
+        "HEARTYCOINSTHANG102026": 2,
+        "HEARTYCOINSTHANG112026": 2,
+        "HEARTYCOINSTHANG122026": 2,
+        "HCTHUOBGBINHLIETSY27T7": 2
+    };
 
-    // 2. Lấy thêm các mã mà admin đã tạo thêm qua trạm Admin (lưu trên localStorage của thiết bị đó)
+    // 1b. Lấy thêm các mã tùy chỉnh do Admin tạo
     let savedCodes = localStorage.getItem('hearty_global_codes');
     let customCodes = savedCodes ? JSON.parse(savedCodes) : {};
 
-    // 3. Gộp cả mã cố định trong script và mã tùy chỉnh lại với nhau
     return { ...masterCodes, ...customCodes };
 }
 
-
 // 2. Admin tạo mã code mới
-// Cập nhật hàm adminCreateCode để thêm nút Sao chép giftcode trực tiếp vào popup thành công
 function adminCreateCode() {
     const codeInput = document.getElementById('admin-code-input').value.trim().toUpperCase();
     const rewardInput = parseInt(document.getElementById('admin-reward-input').value);
@@ -2418,10 +2484,13 @@ function adminCreateCode() {
     document.getElementById('admin-code-input').value = '';
     document.getElementById('admin-reward-input').value = '';
 
+    // Cập nhật lại danh sách hiển thị sự kiện ngay lập tức
+    loadAllGiftcodes();
+
     showSuccess(`
         <i class="fas fa-key" style="font-size:40px; color:#7b1fa2;"></i>
         <h3 style="margin:10px 0;">Tạo Code Thành Công!</h3>
-        <p>Mã: <b style="color:#7b1fa2;" id="created-code-text">${codeInput}</b><br>
+        <p>Mã: <b style="color:#7b1fa2;">${codeInput}</b><br>
         Thưởng: <b style="color:#ff69b4;">+${rewardInput} Xu</b></p>
         <button onclick="navigator.clipboard.writeText('${codeInput}'); alert('Đã sao chép mã: ${codeInput}');" 
                 style="background: #a18cd1; color: white; border: none; padding: 8px 16px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 13px;">
@@ -2429,7 +2498,6 @@ function adminCreateCode() {
         </button>
     `, true);
 }
-
 
 // 3. Người dùng nhập và đổi code
 function redeemGiftcode() {
@@ -2448,23 +2516,19 @@ function redeemGiftcode() {
 
     let user = JSON.parse(localStorage.getItem(currentName));
     
-    // Khởi tạo danh sách code đã dùng của tài khoản nếu chưa có
     if (!user.redeemedCodes) {
         user.redeemedCodes = [];
     }
 
-    // Kiểm tra xem tài khoản này đã nhập mã này chưa
     if (user.redeemedCodes.includes(code)) {
         return alert("Bạn đã sử dụng mã giftcode này rồi, mỗi tài khoản chỉ được nhập 1 lần!");
     }
 
     const rewardXu = globalCodes[code];
 
-    // Tiến hành cộng xu và ghi nhận mã đã dùng
     user.balance += rewardXu;
     user.redeemedCodes.push(code);
 
-    // Ghi vào lịch sử nạp/nhận xu
     if (!user.history) user.history = [];
     user.history.push({
         date: new Date().toLocaleString(),
@@ -2485,6 +2549,105 @@ function redeemGiftcode() {
         Nhận được: <b style="color:#ff69b4;">+${rewardXu} Xu</b> vào ví!</p>
     `, true);
 }
+
+// 4. Load và phân loại Giftcode tháng & sự kiện (Hỗ trợ hiển thị từ 2 mã sự kiện trở lên)
+// 4. Load và phân loại Giftcode tháng & sự kiện (Đã cải tiến bố cục để không bị tràn nút)
+function loadAllGiftcodes() {
+    const now = new Date();
+    const currentMonth = now.getMonth() + 1;
+    const currentYear = now.getFullYear();
+
+    // --- XỬ LÝ GIFTCODE THÁNG ---
+    const monthTitleEl = document.getElementById('current-month-title');
+    const monthCodeEl = document.getElementById('monthly-code-display');
+    const monthDescEl = document.getElementById('monthly-code-desc');
+
+    if (monthTitleEl && monthCodeEl) {
+        let monthlyCodeName = `HEARTYCOINSTHANG${currentMonth}${currentYear}`;
+        monthTitleEl.innerText = `🎁 Giftcode Tháng ${currentMonth}/${currentYear}`;
+        monthCodeEl.innerText = monthlyCodeName;
+        monthDescEl.innerHTML = `Phần thưởng: <b style="color:#ff69b4;">+2 Xu</b> • Áp dụng độc quyền trong tháng ${currentMonth}/${currentYear}!`;
+    }
+
+    // --- XỬ LÝ GIFTCODE SỰ KIỆN (Kiểm tra cú pháp để phân loại tự động) ---
+    let allCodes = getGlobalCodes();
+    let eventCodesList = [];
+
+    // Biểu thức chính quy kiểm tra cú pháp chuẩn: HEARTYCOINSTHANG + [1-2 chữ số tháng] + [4 chữ số năm]
+    const monthCodeRegex = /^HEARTYCOINSTHANG(1[0-2]|[1-9])\d{4}$/;
+
+    for (let code in allCodes) {
+        // Nếu không khớp với cú pháp giftcode tháng -> Được đưa vào danh sách giftcode sự kiện
+        if (!monthCodeRegex.test(code)) {
+            eventCodesList.push({ code: code, reward: allCodes[code] });
+        }
+    }
+
+    // Cập nhật giao diện bảng sự kiện cho phép hiển thị nhiều mã và chống tràn
+    const eventCardBox = document.querySelector('.monthly-gift-card[style*="ff4757"]');
+    if (eventCardBox) {
+        let listHTML = `
+            <i class="fas fa-bullhorn" style="font-size: 30px; color: #ff4757; margin-bottom: 8px;"></i>
+            <h3 style="margin: 0; color: #d63031; font-size: 18px;">Sự Kiện Đặc Biệt</h3>
+            <p style="font-size: 12px; color: #666; margin: 8px 0;">Danh sách mã code phần thưởng từ minigame và sự kiện:</p>
+        `;
+
+        if (eventCodesList.length > 0) {
+            listHTML += `<div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">`;
+            eventCodesList.forEach(item => {
+                // Thay đổi thành flex-direction: column để khi code dài, nút sao chép sẽ tự động xuống dòng dưới
+                listHTML += `
+                    <div style="display: flex; flex-direction: column; align-items: stretch; background: white; padding: 10px 12px; border-radius: 12px; border: 1px solid #ff7675; gap: 8px; box-shadow: 0 2px 5px rgba(255,71,87,0.05);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                            <div class="gift-code-badge" style="margin: 0; color: #ff4757; border: none; font-size: 13px; word-break: break-all; text-align: left;">${item.code}</div>
+                            <span style="font-size: 11px; color: #888; font-weight: bold;">+${item.reward} Xu</span>
+                        </div>
+                        <button onclick="copySpecificCode('${item.code}')" style="background: #ff4757; color: white; border: none; padding: 6px 0; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 12px; width: 100%; box-shadow: 0 2px 5px rgba(255,71,87,0.2);">
+                            <i class="fas fa-copy"></i> Sao chép mã
+                        </button>
+                    </div>
+                `;
+            });
+            listHTML += `</div>`;
+        } else {
+            listHTML += `
+                <div class="gift-code-badge" style="color: #ff4757; border-color: #ff7675;">CHƯA CÓ</div>
+                <p style="font-size: 11px; color: #888; margin: 5px 0 0 0; font-style: italic;">Chưa có giftcode sự kiện, bạn hãy chờ nhé!</p>
+            `;
+        }
+
+        eventCardBox.innerHTML = listHTML;
+    }
+}
+
+
+// 5. Hàm sao chép mã code tháng hiện tại
+function copyMonthlyCode() {
+    const codeText = document.getElementById('monthly-code-display').innerText;
+    if (!codeText || codeText === '---') return;
+
+    navigator.clipboard.writeText(codeText).then(() => {
+        showSuccess(`
+            <i class="fas fa-check-circle" style="font-size:40px; color:#2ed573; margin-bottom:10px;"></i>
+            <h3 style="margin:0; color:#d87093;">Đã sao chép!</h3>
+            <p style="margin:8px 0 0 0;">Đã lưu mã <b style="color:#ff69b4;">${codeText}</b> vào bộ nhớ tạm.</p>
+        `, true);
+    });
+}
+
+// 6. Hàm sao chép mã sự kiện bất kỳ theo tên mã truyền vào
+function copySpecificCode(codeText) {
+    if (!codeText) return;
+
+    navigator.clipboard.writeText(codeText).then(() => {
+        showSuccess(`
+            <i class="fas fa-check-circle" style="font-size:40px; color:#2ed573; margin-bottom:10px;"></i>
+            <h3 style="margin:0; color:#d87093;">Đã sao chép mã sự kiện!</h3>
+            <p style="margin:8px 0 0 0;">Đã lưu mã <b style="color:#ff4757;">${codeText}</b> vào bộ nhớ tạm.</p>
+        `, true);
+    });
+}
+
 
 function toggleSecretCreator() {
     const box = document.getElementById('admin-creator-box');
@@ -2513,7 +2676,6 @@ function submitAdminPassword() {
         document.getElementById('admin-password-input').focus();
     }
 }
-
 
     </script>
 </body>
