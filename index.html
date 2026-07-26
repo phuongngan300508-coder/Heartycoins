@@ -2550,8 +2550,7 @@ function redeemGiftcode() {
     `, true);
 }
 
-// 4. Load và phân loại Giftcode tháng & sự kiện (Hỗ trợ hiển thị từ 2 mã sự kiện trở lên)
-// 4. Load và phân loại Giftcode tháng & sự kiện (Đã cải tiến bố cục để không bị tràn nút)
+// 4. Load và phân loại Giftcode tháng & sự kiện chỉ từ getGlobalCodes() (Không lấy mã cũ trong localStorage)
 function loadAllGiftcodes() {
     const now = new Date();
     const currentMonth = now.getMonth() + 1;
@@ -2569,21 +2568,25 @@ function loadAllGiftcodes() {
         monthDescEl.innerHTML = `Phần thưởng: <b style="color:#ff69b4;">+2 Xu</b> • Áp dụng độc quyền trong tháng ${currentMonth}/${currentYear}!`;
     }
 
-    // --- XỬ LÝ GIFTCODE SỰ KIỆN (Kiểm tra cú pháp để phân loại tự động) ---
-    let allCodes = getGlobalCodes();
-    let eventCodesList = [];
+    // --- XỬ LÝ GIFTCODE SỰ KIỆN (Chỉ lấy các mã phụ trợ định nghĩa sẵn trong getGlobalCodes) ---
+    // Tạo một đối tượng chỉ chứa các mã sự kiện cố định, loại bỏ hoàn toàn masterCodes tháng
+    let masterCodes = {
+        
+        "HCTHUOBGBINHLIETSY27T7": 2 // Mã sự kiện đang có trong getGlobalCodes
+    };
 
-    // Biểu thức chính quy kiểm tra cú pháp chuẩn: HEARTYCOINSTHANG + [1-2 chữ số tháng] + [4 chữ số năm]
+    let eventCodesList = [];
+    // Biểu thức chính quy kiểm tra cú pháp chuẩn mã tháng
     const monthCodeRegex = /^HEARTYCOINSTHANG(1[0-2]|[1-9])\d{4}$/;
 
-    for (let code in allCodes) {
-        // Nếu không khớp với cú pháp giftcode tháng -> Được đưa vào danh sách giftcode sự kiện
+    // Chỉ quét qua danh sách gốc trong code, không đọc localStorage của admin
+    for (let code in masterCodes) {
         if (!monthCodeRegex.test(code)) {
-            eventCodesList.push({ code: code, reward: allCodes[code] });
+            eventCodesList.push({ code: code, reward: masterCodes[code] });
         }
     }
 
-    // Cập nhật giao diện bảng sự kiện cho phép hiển thị nhiều mã và chống tràn
+    // Cập nhật giao diện bảng sự kiện
     const eventCardBox = document.querySelector('.monthly-gift-card[style*="ff4757"]');
     if (eventCardBox) {
         let listHTML = `
@@ -2595,7 +2598,6 @@ function loadAllGiftcodes() {
         if (eventCodesList.length > 0) {
             listHTML += `<div style="display: flex; flex-direction: column; gap: 10px; margin-top: 15px;">`;
             eventCodesList.forEach(item => {
-                // Thay đổi thành flex-direction: column để khi code dài, nút sao chép sẽ tự động xuống dòng dưới
                 listHTML += `
                     <div style="display: flex; flex-direction: column; align-items: stretch; background: white; padding: 10px 12px; border-radius: 12px; border: 1px solid #ff7675; gap: 8px; box-shadow: 0 2px 5px rgba(255,71,87,0.05);">
                         <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
@@ -2619,6 +2621,8 @@ function loadAllGiftcodes() {
         eventCardBox.innerHTML = listHTML;
     }
 }
+
+
 
 
 // 5. Hàm sao chép mã code tháng hiện tại
