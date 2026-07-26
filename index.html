@@ -2386,9 +2386,9 @@ function getGlobalCodes() {
     if (!codes) {
         // Mặc định tạo sẵn một vài mã mẫu
         const defaultCodes = {
-            "HEARTY2026": 10,
-            "WELCOME": 5,
-            "VIPDAO": 20
+            "HEARTYCOINSTHANG7": 2,
+            "HEARTYCOINSTHANG8": 2,
+            "HEARTYCOINSTHANG9": 2
         };
         localStorage.setItem('hearty_global_codes', JSON.stringify(defaultCodes));
         return defaultCodes;
@@ -2397,6 +2397,7 @@ function getGlobalCodes() {
 }
 
 // 2. Admin tạo mã code mới
+// Cập nhật hàm adminCreateCode để thêm nút Sao chép giftcode trực tiếp vào popup thành công
 function adminCreateCode() {
     const codeInput = document.getElementById('admin-code-input').value.trim().toUpperCase();
     const rewardInput = parseInt(document.getElementById('admin-reward-input').value);
@@ -2406,10 +2407,6 @@ function adminCreateCode() {
 
     let globalCodes = getGlobalCodes();
     
-    if (globalCodes[codeInput]) {
-        return alert(`Mã "${codeInput}" đã tồn tại với phần thưởng ${globalCodes[codeInput]} Xu!`);
-    }
-
     globalCodes[codeInput] = rewardInput;
     localStorage.setItem('hearty_global_codes', JSON.stringify(globalCodes));
 
@@ -2419,10 +2416,15 @@ function adminCreateCode() {
     showSuccess(`
         <i class="fas fa-key" style="font-size:40px; color:#7b1fa2;"></i>
         <h3 style="margin:10px 0;">Tạo Code Thành Công!</h3>
-        <p>Mã: <b style="color:#7b1fa2;">${codeInput}</b><br>
+        <p>Mã: <b style="color:#7b1fa2;" id="created-code-text">${codeInput}</b><br>
         Thưởng: <b style="color:#ff69b4;">+${rewardInput} Xu</b></p>
+        <button onclick="navigator.clipboard.writeText('${codeInput}'); alert('Đã sao chép mã: ${codeInput}');" 
+                style="background: #a18cd1; color: white; border: none; padding: 8px 16px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; font-size: 13px;">
+            <i class="fas fa-copy"></i> Sao chép mã
+        </button>
     `, true);
 }
+
 
 // 3. Người dùng nhập và đổi code
 function redeemGiftcode() {
