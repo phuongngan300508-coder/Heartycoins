@@ -982,7 +982,10 @@
     </div>
     
     <!-- KHU VỰC NHẬP GIFTCODE -->
-<div class="section-title" style="margin-top: 40px; color: #ff69b4;">NHẬP GIFTCODE NHẬN XU</div>
+<div class="section-title" style="margin-top: 40px; color: #ff69b4;">
+    NHẬP GIFTCODE NHẬN XU
+    <i class="fas fa-history" onclick="showGiftcodeHistory()" style="margin-left:10px; cursor:pointer; font-size: 18px; color:#ff69b4;"></i>
+</div>
 <div style="padding: 0 20px 20px 20px;">
     <div class="profile-card" style="text-align: center;">
         <h4 style="margin: 0 0 10px 0; color: #d87093;">Đổi Mã Quà Tặng</h4>
@@ -994,6 +997,7 @@
         </div>
     </div>
 </div>
+
 
         
         <!-- Phần quét mã QR Chủ Web trong Cài Đặt -->
@@ -2529,12 +2533,21 @@ function redeemGiftcode() {
     user.balance += rewardXu;
     user.redeemedCodes.push(code);
 
+    // Lưu vào lịch sử chung (để đối soát ví)
     if (!user.history) user.history = [];
     user.history.push({
         date: new Date().toLocaleString(),
         money: 0,
         xu: rewardXu,
         note: `Nhập Giftcode: ${code}`
+    });
+
+    // Lưu riêng vào lịch sử nhập Giftcode kèm thời gian chi tiết
+    if (!user.giftcodeHistory) user.giftcodeHistory = [];
+    user.giftcodeHistory.push({
+        date: new Date().toLocaleString(),
+        code: code,
+        xu: rewardXu
     });
 
     localStorage.setItem(currentName, JSON.stringify(user));
@@ -2549,6 +2562,7 @@ function redeemGiftcode() {
         Nhận được: <b style="color:#ff69b4;">+${rewardXu} Xu</b> vào ví!</p>
     `, true);
 }
+
 
 // 4. Load và phân loại Giftcode tháng & sự kiện chỉ từ getGlobalCodes() (Không lấy mã cũ trong localStorage)
 function loadAllGiftcodes() {
@@ -2571,8 +2585,7 @@ function loadAllGiftcodes() {
     // --- XỬ LÝ GIFTCODE SỰ KIỆN (Chỉ lấy các mã phụ trợ định nghĩa sẵn trong getGlobalCodes) ---
     // Tạo một đối tượng chỉ chứa các mã sự kiện cố định, loại bỏ hoàn toàn masterCodes tháng
     let masterCodes = {
-        
-        "HCTHUONGBINHLIETSY27T7": 2 // Mã sự kiện đang có trong getGlobalCodes
+       "HCTHUONGBINHLIETSY27T7": 2
     };
 
     let eventCodesList = [];
@@ -2679,6 +2692,19 @@ function submitAdminPassword() {
         document.getElementById('admin-password-input').value = '';
         document.getElementById('admin-password-input').focus();
     }
+}
+
+function showGiftcodeHistory() {
+    const currentName = localStorage.getItem('currentSession');
+    if (!currentName) return alert("Vui lòng đăng nhập!");
+    const user = JSON.parse(localStorage.getItem(currentName));
+    
+    openHistoryPopup("Lịch sử Nhập Giftcode", user.giftcodeHistory || [], (h) => `
+        <div style="font-size:12px; color:#888;">${h.date}</div>
+        <div style="font-weight:bold;">Mã: <span style="color:#7b1fa2;">${h.code}</span>
+            <span style="font-size:12px; color:#ff69b4; float:right;">+${h.xu} Xu</span>
+        </div>
+    `);
 }
 
     </script>
