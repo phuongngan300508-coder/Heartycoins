@@ -1,4 +1,4 @@
-const CACHE_NAME = 'hearty-coins-v2-cache-2026';
+const CACHE_NAME = 'hearty-coins-v3-cache-2026';
 
 self.addEventListener('install', (event) => {
     self.skipWaiting();
