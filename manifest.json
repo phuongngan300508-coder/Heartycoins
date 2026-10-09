@@ -1,7 +1,7 @@
 {
   "id": "hearty-coins-app-v2-2026",
-  "name": "Hearty Coins V2",
-  "short_name": "Hearty V2",
+  "name": "Hearty Coins",
+  "short_name": "Hearty Coins",
   "description": "Ví xu và đổi quà Hearty Coins phiên bản mới 2026",
   "start_url": "./index.html?pwa=v2",
   "scope": "./",
