@@ -1,0 +1,26 @@
+{
+  "id": "/hearty-coins-v2",
+  "name": "Hearty Coins App",
+  "short_name": "HeartyCoins",
+  "description": "Ví xu và đổi quà Hearty Coins phiên bản mới",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#fff5f7",
+  "theme_color": "#ff69b4",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://api.iconify.design/noto:sparkling-heart.svg?width=192&height=192",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://api.iconify.design/noto:sparkling-heart.svg?width=512&height=512",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
