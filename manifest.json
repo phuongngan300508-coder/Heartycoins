@@ -1,12 +1,10 @@
 {
-  "id": "/hearty-coins/",
   "name": "Hearty Coins",
   "short_name": "Hearty Coins",
-  "start_url": "/hearty-coins/",
-  "scope": "/hearty-coins/",
+  "start_url": ".",
   "display": "standalone",
   "background_color": "#FFC9D1",
-  "theme_color": "#FF69B4",
+  "theme_color": "##FF69B4",
   "icons": [
     {
       "src": "https://i.postimg.cc/VN1Ysw1L/Khong-Co-Tieu-De27-20260716195153.jpg",
